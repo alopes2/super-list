@@ -1,13 +1,15 @@
 import React from 'react';
 import Navigation from './Navigation/Navigation';
 
+import classes from './Layout.module.scss';
+
 const Layout = props => (
-    <React.Fragment>
+    <div className={classes.Layout}>
         <Navigation />
-        <main>
+        <main className={classes.Main}>
             {props.children}
         </main>
-    </React.Fragment>
+    </div>
 );
 
 export default Layout;

@@ -5,11 +5,27 @@
     align-items: center;
     justify-content: flex-start;
     flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: {
+        top: 10px;
+    }
+
+    li {
+        margin: {
+            right: 25px;
+            bottom: 25px;
+        }
+        &:last-child {
+            margin: {
+                right: 0 !important;
+            }
+        }
+    }
 }
 
-.Container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
+.AddListButton {
+    position: fixed !important;
+    bottom: 10%;
+    right: 20%;
 }

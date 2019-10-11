@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Button } from '@material-ui/core';
 import db from '../../config/firebase-datastore';
 import ListCard from './ListCard/ListCard';
 import classes from './ListsList.module.scss';
@@ -41,18 +41,20 @@ const ListsList = (props) => {
     if (!state.loading) {
         render = <h3>No lists were found yet.</h3>;
         if (state.lists.length > 0) {
-            render = state.lists.map(l => <ListCard 
-                key={l.id} list={l} 
-                onListDetails={(id) => onListDetails(id)}/>);
+            render = state.lists.map(l => <li key={l.id}>
+                <ListCard  list={l} 
+                    onListDetails={(id) => onListDetails(id)}/>
+                </li>);
         }
     }
 
     return (
-        <div className={classes.Container}>
-            <div className={classes.List}>
+        <React.Fragment>
+            <Button variant="contained" color="primary">Add list</Button>
+            <ul className={classes.List}>
                 {render}
-            </div>
-        </div>
+            </ul>
+        </React.Fragment>
         );
 };
 

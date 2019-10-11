@@ -165,8 +165,8 @@ const Navigation = () => {
   );
 
   return (
-    <header className={classes.grow}>
-      <AppBar position="static">
+    <header>
+      <AppBar position="static" className={classes.grow}>
         <Toolbar>
           <IconButton
             edge="start"
