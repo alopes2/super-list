@@ -8,7 +8,7 @@ import Layout from './Layout/Layout';
 function App() {
   return (
     <Layout>
-      <Container>
+      <Container maxWidth="md">
         <Lists />
       </Container>
     </Layout>
