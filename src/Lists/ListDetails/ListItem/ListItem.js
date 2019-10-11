@@ -1,13 +1,13 @@
 import React from 'react';
-import { Checkbox } from '@material-ui/core';
+import { Checkbox, ListItem } from '@material-ui/core';
 
-const ListItem = props => {
+const OwnListItem = props => {
     return (
-        <div>
+        <ListItem dense button>
             <Checkbox checked={props.done}/>
             <span>{props.name}</span>
-        </div>
+        </ListItem>
     )
 };
 
-export default ListItem;
+export default OwnListItem;

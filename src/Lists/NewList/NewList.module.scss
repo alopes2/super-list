@@ -1,0 +1,35 @@
+.FormContainer {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.Title {
+    margin: {
+        bottom: 25px;
+    }
+}
+
+.TextField {
+    display: block !important;
+    width: 200px;
+}
+
+.ButtonGroup {
+    margin: {
+        top: 15px;
+    }
+    button {
+        margin: {
+            right: 15px;
+        }
+        text-decoration: none;
+    }
+
+    a {
+        text-decoration: none;
+    }
+}

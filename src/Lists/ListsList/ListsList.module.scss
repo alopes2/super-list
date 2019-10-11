@@ -25,7 +25,10 @@
 }
 
 .AddListButton {
-    position: fixed !important;
-    bottom: 10%;
-    right: 20%;
+    text-decoration: none;
+}
+
+.Loader {
+    display: table;
+    margin: 0 auto;
 }

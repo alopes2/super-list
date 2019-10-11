@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { CircularProgress, Container } from '@material-ui/core';
+import { CircularProgress, Container, List, makeStyles } from '@material-ui/core';
 import ListItem from './ListItem/ListItem';
 import db from '../../config/firebase-datastore';
 
+const useStyles = makeStyles(theme => ({
+    root: {
+      width: '100%',
+      maxWidth: 360,
+      backgroundColor: theme.palette.background.paper,
+    },
+  }));
+
 const ListDetails = props => {
+    const classes = useStyles();
     const [state, setState] = useState({ 
         name: null, 
         id: null,
@@ -64,14 +73,16 @@ const ListDetails = props => {
         render = (
             <React.Fragment>
                 <h1>{state.name}</h1>
-                {items}
+                <List className={classes.root}>
+                    {items}
+                </List>
             </React.Fragment>
         );
     }
 
     return (
         <Container maxWidth='sm'>
-            {render}
+                {render}
         </Container>
     );
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CircularProgress, Button } from '@material-ui/core';
+import { NavLink } from 'react-router-dom';
 import db from '../../config/firebase-datastore';
 import ListCard from './ListCard/ListCard';
 import classes from './ListsList.module.scss';
@@ -36,7 +37,7 @@ const ListsList = (props) => {
             });
     }, []);
 
-    let render = <CircularProgress />;
+    let render = <CircularProgress className={classes.Loader}/>;
 
     if (!state.loading) {
         render = <h3>No lists were found yet.</h3>;
@@ -50,7 +51,13 @@ const ListsList = (props) => {
 
     return (
         <React.Fragment>
-            <Button variant="contained" color="primary">Add list</Button>
+            <NavLink 
+                to="new"
+                className={classes.AddListButton}>
+                <Button 
+                    variant="contained" 
+                    color="primary">Add list</Button>
+            </NavLink>
             <ul className={classes.List}>
                 {render}
             </ul>
