@@ -1,4 +1,6 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
+
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -25,6 +27,8 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     display: 'none',
+    color: theme.palette.primary.contrastText,
+    textDecoration: 'none',
     [theme.breakpoints.up('sm')]: {
       display: 'block',
     },
@@ -172,9 +176,13 @@ const Navigation = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography className={classes.title} variant="h6" noWrap>
-            Super List
-          </Typography>
+          <NavLink 
+            to="/"
+            className={classes.title}>
+            <Typography variant="h6" noWrap>
+              Super List
+            </Typography>
+          </NavLink>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
