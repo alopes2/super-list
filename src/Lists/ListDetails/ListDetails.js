@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, List, makeStyles, Divider } from '@material-ui/core';
 import ListItem from './ListItem/ListItem';
 import Loader from '../../shared/components/Loader/Loader.js';
-import db from '../../config/firebase-datastore';
+import { firestore } from '../../config/firebase';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -28,13 +28,13 @@ const ListDetails = props => {
     });
 
     useEffect(() => {
-        db.collection('lists')
+        firestore.collection('lists')
             .doc(props.match.params['id'])
             .get()
             .then(doc => {
                 if (doc.exists) {
                     const listData = doc.data();
-                    db.collection('items')
+                    firestore.collection('items')
                         .where('listId', '==', doc.id)
                         .get()
                         .then((querySnapshot) => {
@@ -75,6 +75,10 @@ const ListDetails = props => {
                 }
             });
     }, [props.match.params]);
+
+    const onItemClick = (item) => {
+        
+    }
 
     let render = <Loader />;
 

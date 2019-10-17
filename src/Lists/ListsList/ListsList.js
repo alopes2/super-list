@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
-import db from '../../config/firebase-datastore';
+import { firestore } from '../../config/firebase';
 import ListCard from './ListCard/ListCard';
 import classes from './ListsList.module.scss';
 import Loader from '../../shared/components/Loader/Loader';
@@ -17,7 +17,7 @@ const ListsList = (props) => {
     }
 
     useEffect(() => {
-        db.collection("lists")
+        firestore.collection("lists")
             .get()
             .then((querySnapshot) => {
                 var tempLists = [];
