@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { CircularProgress, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
 import db from '../../config/firebase-datastore';
 import ListCard from './ListCard/ListCard';
 import classes from './ListsList.module.scss';
+import Loader from '../../shared/components/Loader/Loader';
 
 const ListsList = (props) => {
     const [state, setState] = useState({
@@ -37,7 +38,7 @@ const ListsList = (props) => {
             });
     }, []);
 
-    let render = <CircularProgress className={classes.Loader}/>;
+    let render = <Loader />;
 
     if (!state.loading) {
         render = <h3>No lists were found yet.</h3>;

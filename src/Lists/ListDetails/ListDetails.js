@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { CircularProgress, Container, List, makeStyles } from '@material-ui/core';
+import { Container, List, makeStyles, Divider } from '@material-ui/core';
 import ListItem from './ListItem/ListItem';
+import Loader from '../../shared/components/Loader/Loader.js';
 import db from '../../config/firebase-datastore';
 
 const useStyles = makeStyles(theme => ({
     root: {
       width: '100%',
-      maxWidth: 360,
       backgroundColor: theme.palette.background.paper,
     },
+    sectionTitle: {
+        marginTop: '30px',
+        marginBottom: 2
+    }
   }));
 
 const ListDetails = props => {
@@ -17,7 +21,10 @@ const ListDetails = props => {
         name: null, 
         id: null,
         loading: true,
-        items: []
+        items: {
+            ready: [],
+            done: []
+        }
     });
 
     useEffect(() => {
@@ -31,22 +38,32 @@ const ListDetails = props => {
                         .where('listId', '==', doc.id)
                         .get()
                         .then((querySnapshot) => {
-                            const tempItems = [];
+                            const readyItems = [];
+                            const doneItems = [];
                             for(let docs of querySnapshot.docs) {
                                 const data = docs.data();
-                                tempItems.push({
-                                    id: docs.id,
-                                    name: data.name,
-                                    done: data.done
-                                });
+                                if (data.done) {
+                                    doneItems.push({
+                                        id: docs.id,
+                                        name: data.name,
+                                        done: data.done
+                                    });
+                                } else {
+                                    readyItems.push({
+                                        id: docs.id,
+                                        name: data.name,
+                                        done: data.done
+                                    });
+                                }
                             }
                             setState(prevState => ({
                                 ...prevState,
                                 name: listData.name,
                                 id: doc.id,
-                                items: [
-                                    ...tempItems
-                                ],
+                                items: {
+                                    ready: [...readyItems],
+                                    done: [...doneItems]
+                                },
                                 loading: false
                             }));
                         });
@@ -59,22 +76,35 @@ const ListDetails = props => {
             });
     }, [props.match.params]);
 
-    let render = <CircularProgress />;
+    let render = <Loader />;
 
     if (!state.loading) {
-        const items = state.items.map(item => (
+        const ready = state.items.ready.map(item => (
             <ListItem 
                 key={item.id}
                 name={item.name}
                 done={item.done}
                 />
         ));
+        const done = state.items.done.map(item => (
+            <ListItem 
+                key={item.id}
+                name={item.name}
+                done={item.done}
+                />));
 
         render = (
             <React.Fragment>
                 <h1>{state.name}</h1>
+                <h3 className={classes.sectionTitle}>Items</h3>
+                <Divider />
                 <List className={classes.root}>
-                    {items}
+                    {ready}
+                </List>
+                <h3 className={classes.sectionTitle}>Done</h3>
+                <Divider />
+                <List className={classes.root}>
+                    {done}
                 </List>
             </React.Fragment>
         );
