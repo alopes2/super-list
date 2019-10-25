@@ -4,17 +4,36 @@ import './index.scss';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/styles';
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware, compose } from "redux";
+import createSagaMiddleware from "redux-saga";
 import App from './App';
 import theme from './config/theme';
 import * as serviceWorker from './serviceWorker';
 
+import reducer from './store/reducer';
+
+const composeEnhancers = 
+    process.env.NODE_ENV === "development"
+      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+      : null || compose;
+
+const sagaMiddleware = createSagaMiddleware();
+
+const store = createStore(reducer, composeEnhancers(applyMiddleware(sagaMiddleware)));
+
+const app = (
+    <Provider store={store}>
+        <ThemeProvider theme={theme}>
+            <BrowserRouter basename="/">
+                <CssBaseline />
+                <App />
+            </BrowserRouter>
+        </ThemeProvider>
+    </Provider>);
+
 ReactDOM.render(
-    <ThemeProvider theme={theme}>
-        <BrowserRouter basename="/">
-            <CssBaseline />
-            <App />
-        </BrowserRouter>
-    </ThemeProvider>, 
+    app, 
     document.getElementById('root')
 );
 

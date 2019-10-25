@@ -6,9 +6,9 @@ import NewList from './NewList/NewList';
 
 const Lists = props => {
     return (<Switch>
-        <Route exact path="/" component={ListsList} />
         <Route path="/new" component={NewList} />
         <Route path={'/:id'} component={ListDetails} />
+        <Route exact path="/" component={ListsList} />
     </Switch>);
 };
 

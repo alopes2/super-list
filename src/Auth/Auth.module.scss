@@ -1,0 +1,25 @@
+.LogInContainer {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.FacebookButton {
+    width: 100%;
+    max-width: 300px;
+    background: #3c5a99;
+    padding: 10px;
+    border: 1px solid #fff;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    cursor: pointer;
+    span {
+        font-size: 1rem;
+        margin: {
+            left: 10px;
+        }
+    }
+}

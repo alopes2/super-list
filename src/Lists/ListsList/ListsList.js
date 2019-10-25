@@ -43,10 +43,15 @@ const ListsList = (props) => {
     if (!state.loading) {
         render = <h3>No lists were found yet.</h3>;
         if (state.lists.length > 0) {
-            render = state.lists.map(l => <li key={l.id}>
-                <ListCard  list={l} 
-                    onListDetails={(id) => onListDetails(id)}/>
-                </li>);
+            render = 
+            <ul className={classes.List}>
+                {
+                    state.lists.map(l => <li key={l.id}>
+                        <ListCard  list={l} 
+                                onListDetails={(id) => onListDetails(id)}/>
+                            </li>)
+                }
+            </ul>
         }
     }
 
@@ -59,9 +64,7 @@ const ListsList = (props) => {
                     variant="contained" 
                     color="primary">Add list</Button>
             </NavLink>
-            <ul className={classes.List}>
-                {render}
-            </ul>
+            {render}
         </React.Fragment>
         );
 };
