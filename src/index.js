@@ -12,6 +12,7 @@ import theme from './config/theme';
 import * as serviceWorker from './serviceWorker';
 
 import reducer from './store/reducer';
+import { watchAuth } from './store/sagas';
 
 const composeEnhancers = 
     process.env.NODE_ENV === "development"
@@ -21,6 +22,8 @@ const composeEnhancers =
 const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(reducer, composeEnhancers(applyMiddleware(sagaMiddleware)));
+
+sagaMiddleware.run(watchAuth);
 
 const app = (
     <Provider store={store}>

@@ -76,10 +76,6 @@ const ListDetails = props => {
             });
     }, [props.match.params]);
 
-    const onItemClick = (item) => {
-        
-    }
-
     let render = <Loader />;
 
     if (!state.loading) {
