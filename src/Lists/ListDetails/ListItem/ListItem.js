@@ -3,7 +3,7 @@ import { Checkbox, ListItem } from '@material-ui/core';
 
 const OwnListItem = props => {
     return (
-        <ListItem dense button>
+        <ListItem dense button onClick={props.onItemClick}>
             <Checkbox checked={props.done}/>
             <span>{props.name}</span>
         </ListItem>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, List, makeStyles, Divider } from '@material-ui/core';
+import { Container, List, makeStyles, Divider, Typography, Button, TextField } from '@material-ui/core';
 import ListItem from './ListItem/ListItem';
 import Loader from '../../shared/components/Loader/Loader.js';
 import { firestore } from '../../config/firebase';
@@ -21,10 +21,8 @@ const ListDetails = props => {
         name: null, 
         id: null,
         loading: true,
-        items: {
-            ready: [],
-            done: []
-        }
+        items: [],
+        newItem: ''
     });
 
     useEffect(() => {
@@ -38,32 +36,22 @@ const ListDetails = props => {
                         .where('listId', '==', doc.id)
                         .get()
                         .then((querySnapshot) => {
-                            const readyItems = [];
-                            const doneItems = [];
+                            const items = [];
                             for(let docs of querySnapshot.docs) {
                                 const data = docs.data();
-                                if (data.done) {
-                                    doneItems.push({
+                                items.push({
                                         id: docs.id,
                                         name: data.name,
                                         done: data.done
                                     });
-                                } else {
-                                    readyItems.push({
-                                        id: docs.id,
-                                        name: data.name,
-                                        done: data.done
-                                    });
-                                }
                             }
                             setState(prevState => ({
                                 ...prevState,
                                 name: listData.name,
                                 id: doc.id,
-                                items: {
-                                    ready: [...readyItems],
-                                    done: [...doneItems]
-                                },
+                                items: [
+                                    ...items
+                                ],
                                 loading: false
                             }));
                         });
@@ -76,35 +64,105 @@ const ListDetails = props => {
             });
     }, [props.match.params]);
 
+    const onItemClick = (item) => {
+        firestore.collection('items')
+            .doc(item.id)
+            .update({done: !item.done})
+            .then(result => {
+                console.log(result);
+            });
+
+        const items = [...state.items];
+        const itemIndex = items.findIndex(i => i.id === item.id);
+        const listItem = {...items[itemIndex], done: !item.done};
+
+        items[itemIndex] = {...listItem};
+
+        setState(prevState => ({
+            ...prevState, 
+            items: [...items]
+        }));
+    }
+
+    const onUpdateNewItem = (event) => {
+        const value = event.target.value;
+
+        setState(prevState => ({
+            ...prevState,
+            newItem: value
+        }));
+    }
+
+    const onAddItem = (event) => {
+        event.preventDefault();
+        
+        const itemToBeAdded = {
+            name: state.newItem, 
+            done: false,
+            listId: props.match.params['id']
+        };
+
+        firestore.collection('items')
+            .add(itemToBeAdded)
+            .then(result => {
+                console.log(result);
+            });
+        
+        const updatedItems = [...state.items, itemToBeAdded];
+
+        setState(prevState => ({
+            ...prevState,
+            items: updatedItems,
+            newItem: ''
+        }));
+    }
+
     let render = <Loader />;
 
     if (!state.loading) {
-        const ready = state.items.ready.map(item => (
+        const ready = state.items.filter(i => !i.done).map((item) => (
             <ListItem 
                 key={item.id}
                 name={item.name}
                 done={item.done}
+                onItemClick={() => onItemClick(item)}
                 />
         ));
-        const done = state.items.done.map(item => (
+        const done = state.items.filter(i => i.done).map((item) => (
             <ListItem 
                 key={item.id}
                 name={item.name}
                 done={item.done}
+                onItemClick={() => onItemClick(item)}
                 />));
+        
+        const renderReady = ready.length > 0 ? ready : <Typography style={{margin: '15px'}}>No items here.</Typography>;
+        const renderDone = done.length > 0 ? done : <Typography style={{margin: '15px'}}>No items here.</Typography>;
 
         render = (
             <React.Fragment>
                 <h1>{state.name}</h1>
+                <form onSubmit={onAddItem} style={{display: 'flex', alignItems: 'flex-end'}}>
+                    <TextField
+                      required
+                      name="newItem"
+                      id="standard-required"
+                      label="new item name"
+                      value={state.newItem}
+                      margin="normal"
+                      onChange={onUpdateNewItem}
+                    />
+                    <Button style={{margin: '5px'}} size="small" type="submit" variant="contained" color="primary">Add</Button>
+                </form>
                 <h3 className={classes.sectionTitle}>Items</h3>
                 <Divider />
                 <List className={classes.root}>
-                    {ready}
+                    {renderReady}
                 </List>
                 <h3 className={classes.sectionTitle}>Done</h3>
                 <Divider />
                 <List className={classes.root}>
-                    {done}
+                    {renderDone}
                 </List>
             </React.Fragment>
         );

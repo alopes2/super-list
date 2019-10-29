@@ -4,7 +4,7 @@ const initialState = {
     auth: {
         name: null,
         uid: null,
-        accessToken: null,
+        token: null,
         refreshToken: null,
         email: null
     },
@@ -28,7 +28,7 @@ const reducer = (state = initialState, action) => {
                     ...state.auth,
                     name: user.name,
                     uid: user.uid,
-                    accessToken: user.accessToken,
+                    token: user.token,
                     refreshToken: user.refreshToken,
                     email: user.email
                 },
