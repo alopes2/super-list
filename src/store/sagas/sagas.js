@@ -2,7 +2,7 @@ import { put, select } from 'redux-saga/effects';
 
 import * as actions from '../actions';
 
-import { auth } from '../../config/firebase';
+import firebase, { auth } from '../../config/firebase';
 
 export function* authSaga(action) {
     const user = yield select(state => state.auth);
@@ -14,7 +14,13 @@ export function* authSaga(action) {
         try
         {
             const result = yield auth.getRedirectResult();
-            yield console.log(result);
+
+            if (result.user == null)
+            {
+                const provider = yield new firebase.auth.FacebookAuthProvider();
+                yield auth.signInWithRedirect(provider);
+            }
+
             const authUser =  yield {
                 name: result.user.displayName,
                 email: result.user.email,
@@ -22,6 +28,7 @@ export function* authSaga(action) {
                 refreshToken: result.user.refreshToken,
                 token: result.user.ma
             };
+
             yield put(actions.authSuccess(authUser));
         } catch(error) {
             yield console.error(error);

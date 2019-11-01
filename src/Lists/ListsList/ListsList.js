@@ -17,7 +17,7 @@ const ListsList = (props) => {
     }
 
     useEffect(() => {
-        firestore.collection("lists")
+            firestore.collection("lists")
             .get()
             .then((querySnapshot) => {
                 var tempLists = [];

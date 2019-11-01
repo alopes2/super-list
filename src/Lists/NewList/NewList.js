@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { TextField, Button, Typography } from '@material-ui/core';
-import { NavLink } from 'react-router-dom';
-//import db from '../../config/firebase-datastore';
+import { NavLink, withRouter } from 'react-router-dom';
+import { firestore } from '../../config/firebase';
 
 import classes from './NewList.module.scss';
 
@@ -16,7 +17,16 @@ const NewList = props => {
 
     const onSaveList = event => {
         event.preventDefault();
-        console.log(values);
+        const newList = {
+            name: values.name,
+            createdAt: new Date(),
+            createdBy: props.user
+        }
+        firestore.collection('lists')
+            .add(newList)
+            .then(result => {
+                props.history.push('/');
+            });
     };
 
     return (
@@ -42,4 +52,8 @@ const NewList = props => {
     );
 };
 
-export default NewList;
+const mapStateToProps = (state) => ({
+    user: state.auth.name
+});
+
+export default withRouter(connect(mapStateToProps)(NewList));
