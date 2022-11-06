@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { Container, Typography } from '@mui/material';
-import ItemsList from './components/ItemsLIst';
+import ItemsList from './components/List';
 import classes from './App.module.scss';
 
 function App(): ReactElement {
