@@ -1,4 +1,4 @@
-import firebase, { FirebaseOptions } from 'firebase/app';
+import { FirebaseOptions, initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getAnalytics } from 'firebase/analytics';
@@ -15,7 +15,9 @@ const firebaseConfig: FirebaseOptions = {
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
-const app = firebase.initializeApp(firebaseConfig);
+console.log(firebaseConfig);
+
+const app = initializeApp(firebaseConfig);
 
 export default app;
 export const auth = getAuth(app);

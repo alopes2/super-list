@@ -6,8 +6,10 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { Item } from './Item';
+import { Item, NewItem } from './Item';
 import SuperListItem from './SuperListItem/SuperListItem';
+import { firestore } from '../config/firebase';
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 
 const ItemsList = (): ReactElement => {
   const [items, setItems] = useState<Item[]>([]);
@@ -43,17 +45,27 @@ const ItemsList = (): ReactElement => {
     setNewItem(value);
   };
 
-  const onAddItem = (event: FormEvent) => {
+  const onAddItem = async (event: FormEvent) => {
     event.preventDefault();
 
     const updatedItems = [...items];
-    const newItem: Item = {
+    const newItem: NewItem = {
       done: false,
-      name: newItemName,
-      id: (Math.random() * 1000000).toString(),
+      name: newItemName
     };
 
-    updatedItems.push(newItem);
+    const blah: Item = {
+      done: false,
+      name: newItemName,
+      id: Math.random().toString()
+    };
+
+    updatedItems.push(blah);
+
+    await addDoc(collection(firestore, "items"), {
+      name: newItem.name,
+      state: newItem.done,
+    });
 
     setItems(updatedItems);
   };
