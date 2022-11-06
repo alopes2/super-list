@@ -1,4 +1,4 @@
-import { Button, FormControl, TextField } from '@mui/material';
+import { Button, FormControl, List, TextField } from '@mui/material';
 import {
   ChangeEvent,
   FormEvent,
@@ -9,34 +9,49 @@ import {
 import { Item, NewItem } from './Item';
 import SuperListItem from './SuperListItem/SuperListItem';
 import { firestore } from '../config/firebase';
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  setDoc,
+} from 'firebase/firestore';
 
 const ItemsList = (): ReactElement => {
   const [items, setItems] = useState<Item[]>([]);
   const [newItemName, setNewItem] = useState<string>('');
 
   useEffect(() => {
-    const myItems: Item[] = [1, 2, 3, 4].map((i) => {
-      return {
-        done: false,
-        id: i.toString(),
-        name: `Item ${i}`,
-      };
-    });
+    const unsubscribe = onSnapshot(
+      collection(firestore, 'items'),
+      (querySnapshot) => {
+        const dbItems = querySnapshot.docs.map<Item>((doc) => {
+          const data = doc.data();
 
-    setItems(myItems);
+          return {
+            id: doc.id,
+            done: data.done,
+            name: data.name,
+          };
+        });
+
+        setItems(dbItems);
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
-  const onClickItem = (item: Item) => {
-    const updatedItems = [...items];
-    const itemIndex = updatedItems.findIndex((i) => i.id === item.id);
-
-    updatedItems[itemIndex] = {
-      ...items[itemIndex],
-      done: !item.done,
-    };
-
-    setItems(updatedItems);
+  const onClickItem = async (item: Item) => {
+    await setDoc(
+      doc(firestore, 'items', item.id),
+      {
+        done: !item.done,
+      },
+      { merge: true }
+    );
   };
 
   const onUpdateNewItem = (event: ChangeEvent<HTMLInputElement>) => {
@@ -48,34 +63,25 @@ const ItemsList = (): ReactElement => {
   const onAddItem = async (event: FormEvent) => {
     event.preventDefault();
 
-    const updatedItems = [...items];
     const newItem: NewItem = {
       done: false,
-      name: newItemName
-    };
-
-    const blah: Item = {
-      done: false,
       name: newItemName,
-      id: Math.random().toString()
     };
 
-    updatedItems.push(blah);
-
-    await addDoc(collection(firestore, "items"), {
+    await addDoc(collection(firestore, 'items'), {
       name: newItem.name,
       state: newItem.done,
     });
-
-    setItems(updatedItems);
   };
 
   const list: ReactElement[] = items.map((i) => (
     <SuperListItem
       key={i.id}
+      id={i.id}
       done={i.done}
       name={i.name}
       onItemClick={() => onClickItem(i)}
+      onDeleteIconClick={() => {}}
     />
   ));
 
@@ -111,7 +117,7 @@ const ItemsList = (): ReactElement => {
         </FormControl>
       </form>
       <hr />
-      {list}
+      <List>{list}</List>
     </>
   );
 };
