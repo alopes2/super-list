@@ -12,6 +12,7 @@ import { firestore } from '../config/firebase';
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
   setDoc,
@@ -54,6 +55,12 @@ const ItemsList = (): ReactElement => {
     );
   };
 
+  const onDeleteItem = async (item: Item) => {
+    await deleteDoc(
+      doc(firestore, 'items', item.id)
+    );
+  };
+
   const onUpdateNewItem = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
 
@@ -72,16 +79,18 @@ const ItemsList = (): ReactElement => {
       name: newItem.name,
       state: newItem.done,
     });
+
+    setNewItem('');
   };
 
-  const list: ReactElement[] = items.map((i) => (
+  const list: ReactElement[] = items.map((item) => (
     <SuperListItem
-      key={i.id}
-      id={i.id}
-      done={i.done}
-      name={i.name}
-      onItemClick={() => onClickItem(i)}
-      onDeleteIconClick={() => {}}
+      key={item.id}
+      id={item.id}
+      done={item.done}
+      name={item.name}
+      onItemClick={() => onClickItem(item)}
+      onDeleteIconClick={() => onDeleteItem(item)}
     />
   ));
 
