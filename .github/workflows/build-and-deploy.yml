@@ -67,12 +67,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - run: echo $GITHUB_WORKSPACE
-    - run: echo "GOOGLE_APPLICATION_CREDENTIALS=$GITHUB_WORKSPACE/account.json" >> $GITHUB_ENV
-    - run: echo $GOOGLE_APPLICATION_CREDENTIALS
     - name: Install Firebase
       run: npm i -g firebase-tools
-    - name: Create service account json
-      run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > account.json
     - name: Deploy
-      run: firebase deploy --only hosting,firestore
+      run: firebase deploy --only hosting,firestore --token ${{ secrets.FIREBASE_TOKEN }}
