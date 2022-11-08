@@ -35,8 +35,9 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm run build
-    - name: Archive production artifacts
+    - name: Build application
+      run: npm run build
+    - name: Generate production artifacts
       uses: actions/upload-artifact@v3
       with:
         name: build_${{ github.sha }}
@@ -58,7 +59,7 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
       
     steps:
-    - name: Download a single artifact
+    - name: Download production artifacts
       uses: actions/download-artifact@v3
       with:
         name: build_${{ github.sha }}
@@ -66,3 +67,14 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Install Firebase
+      run: npm i -g firebase-tools
+    - name: Create service account json
+      run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > account.json
+    - name: Set GOOGLE_APPLICATION_CREDENTIALS
+      run: export GOOGLE_APPLICATION_CREDENTIALS=$pwd/account.json
+    - run: echo $GOOGLE_APPLICATION_CREDENTIALS
+    - name: Login
+      run: firebase login:ci
+    - name: Deploy
+      run: firebase deploy --only hosting,firestore
