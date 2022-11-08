@@ -68,7 +68,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: echo $GITHUB_WORKSPACE
-    - run: export GOOGLE_APPLICATION_CREDENTIALS=$GITHUB_WORKSPACE/account.json
+    - run: echo "GOOGLE_APPLICATION_CREDENTIALS=$GITHUB_WORKSPACE/account.json" > $GITHUB_ENV
     - run: echo $GOOGLE_APPLICATION_CREDENTIALS
     - name: Install Firebase
       run: npm i -g firebase-tools
