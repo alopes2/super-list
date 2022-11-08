@@ -16,6 +16,7 @@ env:
   REACT_APP_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
   REACT_APP_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
   REACT_APP_FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
+  GOOGLE_APPLICATION_CREDENTIALS: /account.json
 
 jobs:
   build:
@@ -70,11 +71,7 @@ jobs:
     - name: Install Firebase
       run: npm i -g firebase-tools
     - name: Create service account json
-      run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > account.json
-    - name: Set GOOGLE_APPLICATION_CREDENTIALS
-      run: export GOOGLE_APPLICATION_CREDENTIALS=$pwd/account.json
+      run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > /account.json
     - run: echo $GOOGLE_APPLICATION_CREDENTIALS
-    - name: Login
-      run: firebase login:ci
     - name: Deploy
       run: firebase deploy --only hosting,firestore
