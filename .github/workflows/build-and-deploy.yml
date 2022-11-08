@@ -16,7 +16,7 @@ env:
   REACT_APP_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
   REACT_APP_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
   REACT_APP_FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
-  GOOGLE_APPLICATION_CREDENTIALS: /account.json
+  GOOGLE_APPLICATION_CREDENTIALS: ${{ env.GITHUB_WORKSPACE }}/account.json
 
 jobs:
   build:
@@ -68,10 +68,13 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+    - run: echo $GITHUB_WORKSPACE
+    - run: echo ${{ env.GITHUB_WORKSPACE }}
     - name: Install Firebase
       run: npm i -g firebase-tools
     - name: Create service account json
-      run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > /account.json
+      run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > account.json
     - run: echo $GOOGLE_APPLICATION_CREDENTIALS
+    - run: echo ${{ env.GOOGLE_APPLICATION_CREDENTIALS }}
     - name: Deploy
       run: firebase deploy --only hosting,firestore
