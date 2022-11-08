@@ -1,7 +1,5 @@
-import { Button, FormControl, List, TextField } from '@mui/material';
+import { List } from '@mui/material';
 import {
-  ChangeEvent,
-  FormEvent,
   ReactElement,
   useEffect,
   useState,
@@ -17,10 +15,10 @@ import {
   onSnapshot,
   setDoc,
 } from 'firebase/firestore';
+import NewItemForm from './NewItemForm';
 
 const ItemsList = (): ReactElement => {
   const [items, setItems] = useState<Item[]>([]);
-  const [newItemName, setNewItem] = useState<string>('');
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -61,23 +59,13 @@ const ItemsList = (): ReactElement => {
     );
   };
 
-  const onUpdateNewItem = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-
-    setNewItem(value);
-  };
-
-  const onAddItem = async (event: FormEvent) => {
-    event.preventDefault();
-
+  const onAddItem = async (newItemName: string) => {
     const newItem: NewItem = {
       done: false,
       name: newItemName,
     };
 
     await addDoc(collection(firestore, 'items'), newItem);
-
-    setNewItem('');
   };
 
   const list: ReactElement[] = items.map((item) => (
@@ -93,35 +81,9 @@ const ItemsList = (): ReactElement => {
 
   return (
     <>
-      <form onSubmit={onAddItem}>
-        <FormControl
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-          }}
-        >
-          <TextField
-            required
-            name="newItem"
-            id="standard-required"
-            label="new item"
-            value={newItemName}
-            margin="normal"
-            onChange={onUpdateNewItem}
-          />
-          <Button
-            style={{ margin: '5px', height: '100%' }}
-            size="small"
-            type="submit"
-            variant="contained"
-            color="primary"
-          >
-            Add
-          </Button>
-        </FormControl>
-      </form>
+      <NewItemForm
+        onAddItem={onAddItem}
+      />
       <hr />
       <List>{list}</List>
     </>
