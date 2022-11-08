@@ -75,10 +75,7 @@ const ItemsList = (): ReactElement => {
       name: newItemName,
     };
 
-    await addDoc(collection(firestore, 'items'), {
-      name: newItem.name,
-      state: newItem.done,
-    });
+    await addDoc(collection(firestore, 'items'), newItem);
 
     setNewItem('');
   };

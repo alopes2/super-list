@@ -20,6 +20,7 @@ type ItemProps = {
 
 const SuperListItem = (props: ItemProps): ReactElement => {
   const styles = props.done ? classes.Done : '';
+  
   return (
     <ListItem
       dense
