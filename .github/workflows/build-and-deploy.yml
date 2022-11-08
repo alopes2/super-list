@@ -68,13 +68,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: echo $GITHUB_WORKSPACE
-    - run: echo "GOOGLE_APPLICATION_CREDENTIALS=$GITHUB_WORKSPACE/account.json" > $GITHUB_ENV
+    - run: echo "GOOGLE_APPLICATION_CREDENTIALS=$GITHUB_WORKSPACE/account.json" >> $GITHUB_ENV
     - run: echo $GOOGLE_APPLICATION_CREDENTIALS
     - name: Install Firebase
       run: npm i -g firebase-tools
     - name: Create service account json
       run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > account.json
-    - run: echo $GOOGLE_APPLICATION_CREDENTIALS
-    - run: echo ${{ env.GOOGLE_APPLICATION_CREDENTIALS }}
     - name: Deploy
       run: firebase deploy --only hosting,firestore
