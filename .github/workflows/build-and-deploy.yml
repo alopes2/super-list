@@ -63,6 +63,11 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: build_${{ github.sha }}
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
@@ -70,4 +75,4 @@ jobs:
     - name: Install Firebase
       run: npm i -g firebase-tools
     - name: Deploy
-      run: firebase deploy --only hosting,firestore --token ${{ secrets.FIREBASE_TOKEN }}
+      run: firebase deploy --only hosting # Cannot deploy firestore.rules here
