@@ -1,22 +1,15 @@
-import { Button, FormControl, TextField } from "@mui/material";
-import { ChangeEvent, FormEvent, ReactElement, useState } from "react";
+import { Button, FormControl, TextField, TextFieldProps } from "@mui/material";
+import { FormEvent, ReactElement, useRef } from "react";
 
 const NewItemForm = (props: {onAddItem(newItem: string): void}): ReactElement => {
-  const [newItem, setNewItem ] = useState<string>('');
-
-
-  const onUpdateNewItem = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-
-    setNewItem(value);
-  };
+  const newItem = useRef<TextFieldProps>();
 
   const onAddItem = (event: FormEvent) => {
     event.preventDefault();
     
-    props.onAddItem(newItem);
-
-    setNewItem('');
+    const value: string | null = newItem.current?.value as string ?? null;
+    
+    props.onAddItem(value);
   }
 
   return (
@@ -34,9 +27,8 @@ const NewItemForm = (props: {onAddItem(newItem: string): void}): ReactElement =>
           name="newItem"
           id="standard-required"
           label="new item"
-          value={newItem}
+          inputRef={newItem}
           margin="normal"
-          onChange={onUpdateNewItem}
         />
         <Button
           style={{ margin: '5px', height: '100%' }}
