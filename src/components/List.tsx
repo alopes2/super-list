@@ -13,16 +13,20 @@ import {
   deleteDoc,
   doc,
   onSnapshot,
+  query,
   setDoc,
+  where
 } from 'firebase/firestore';
 import NewItemForm from './NewItemForm';
 
 const ItemsList = (): ReactElement => {
   const [items, setItems] = useState<Item[]>([]);
+  const [doneItems, setDoneItems] = useState<Item[]>([]);
 
   useEffect(() => {
+    const itemsQuery = query(collection(firestore, 'items'), where('done', '==', false));
     const unsubscribe = onSnapshot(
-      collection(firestore, 'items'),
+      itemsQuery,
       (querySnapshot) => {
         const dbItems = querySnapshot.docs.map<Item>((doc) => {
           const data = doc.data();
@@ -32,14 +36,35 @@ const ItemsList = (): ReactElement => {
             done: data.done,
             name: data.name,
           };
-        });
+        })
+        .sort((a,b) => a.name > b.name ? 1 : -1);
 
         setItems(dbItems);
       }
     );
 
+    const doneItemsQuery = query(collection(firestore, 'items'), where('done', '==', true));
+    const unsubscribeDoneItems = onSnapshot(
+      doneItemsQuery,
+      (querySnapshot) => {
+        const dbItems = querySnapshot.docs.map<Item>((doc) => {
+          const data = doc.data();
+
+          return {
+            id: doc.id,
+            done: data.done,
+            name: data.name,
+          };
+        })
+        .sort((a,b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1);
+
+        setDoneItems(dbItems);
+      }
+    );
+
     return () => {
       unsubscribe();
+      unsubscribeDoneItems();
     };
   }, []);
 
@@ -78,6 +103,17 @@ const ItemsList = (): ReactElement => {
       onDeleteIconClick={() => onDeleteItem(item)}
     />
   ));
+  
+  const doneList: ReactElement[] = doneItems.map((item) => (
+    <SuperListItem
+      key={item.id}
+      id={item.id}
+      done={item.done}
+      name={item.name}
+      onItemClick={() => onClickItem(item)}
+      onDeleteIconClick={() => onDeleteItem(item)}
+    />
+  ));
 
   return (
     <>
@@ -86,6 +122,8 @@ const ItemsList = (): ReactElement => {
       />
       <hr />
       <List>{list}</List>
+      <hr />
+      <List>{doneList}</List>
     </>
   );
 };
