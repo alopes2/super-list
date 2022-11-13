@@ -93,7 +93,7 @@ const ItemsList = (): ReactElement => {
     await addDoc(collection(firestore, 'items'), newItem);
   };
 
-  const list: ReactElement[] = items.map((item) => (
+  const list: ReactElement[] | string = items.length > 0 ? items.map((item) => (
     <SuperListItem
       key={item.id}
       id={item.id}
@@ -102,7 +102,8 @@ const ItemsList = (): ReactElement => {
       onItemClick={() => onClickItem(item)}
       onDeleteIconClick={() => onDeleteItem(item)}
     />
-  ));
+  )) :
+  'Nothing added to the list yet.';
   
   const doneList: ReactElement[] = doneItems.map((item) => (
     <SuperListItem
@@ -115,6 +116,12 @@ const ItemsList = (): ReactElement => {
     />
   ));
 
+  const doneElement: ReactElement | null = doneItems.length > 0 ? 
+  (<>
+  <hr />
+  <List>{doneList}</List></>) :
+  null;
+
   return (
     <>
       <NewItemForm
@@ -122,8 +129,7 @@ const ItemsList = (): ReactElement => {
       />
       <hr />
       <List>{list}</List>
-      <hr />
-      <List>{doneList}</List>
+      {doneElement}
     </>
   );
 };
