@@ -10,6 +10,8 @@ const NewItemForm = (props: {onAddItem(newItem: string): void}): ReactElement =>
     const value: string | null = newItem.current?.value as string ?? null;
     
     props.onAddItem(value);
+
+    newItem.current!.value = '';
   }
 
   return (
